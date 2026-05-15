@@ -51,9 +51,11 @@
               "example": {
                 "nim": "102022400045",
                 "kode_mata_kuliah": "IAE401",
+                "nama_mata_kuliah": "Integrasi Aplikasi Enterprise",
+                "sks": 3,
                 "tahun_ajaran": "2025/2026",
                 "semester": "ganjil",
-                "catatan": "Pengambilan KRS semester baru"
+                "catatan": "Demo pencatatan KRS"
               }
             }
           }

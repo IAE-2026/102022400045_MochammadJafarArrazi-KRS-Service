@@ -67,6 +67,26 @@ class KrsController extends Controller
         }
 
         $validated = $validator->validated();
+
+        $alreadyExists = Krs::query()
+            ->where('nim', $validated['nim'])
+            ->where('kode_mata_kuliah', $validated['kode_mata_kuliah'])
+            ->where('tahun_ajaran', $validated['tahun_ajaran'])
+            ->where('semester', $validated['semester'])
+            ->exists();
+
+        if ($alreadyExists) {
+            return ApiResponse::error(
+                'KRS untuk mata kuliah ini sudah tercatat pada semester tersebut.',
+                [
+                    'kode_mata_kuliah' => [
+                        'Mahasiswa sudah mengambil mata kuliah ini pada tahun ajaran dan semester yang sama.',
+                    ],
+                ],
+                422
+            );
+        }
+
         $integration = $academicService->validateKrsRequest($validated);
 
         if (! $integration['ok']) {

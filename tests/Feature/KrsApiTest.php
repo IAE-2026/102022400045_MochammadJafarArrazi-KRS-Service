@@ -79,6 +79,8 @@ class KrsApiTest extends TestCase
 
     public function test_post_krs_creates_record_after_external_validation(): void
     {
+        config(['iae.external_validation_enabled' => true]);
+
         Http::fake([
             'http://mahasiswa-service:8000/api/v1/mahasiswa/*' => Http::response([
                 'status' => 'success',
@@ -129,5 +131,32 @@ class KrsApiTest extends TestCase
         $response->assertUnprocessable()
             ->assertJsonPath('status', 'error')
             ->assertJsonPath('message', 'Validasi gagal.');
+    }
+
+    public function test_post_krs_returns_422_for_duplicate_course_in_same_semester(): void
+    {
+        Krs::query()->create([
+            'nim' => '102022400045',
+            'kode_mata_kuliah' => 'IAE401',
+            'nama_mata_kuliah' => 'Integrasi Aplikasi Enterprise',
+            'sks' => 3,
+            'tahun_ajaran' => '2025/2026',
+            'semester' => 'ganjil',
+            'status_persetujuan' => 'pending',
+        ]);
+
+        $response = $this->withHeaders($this->headers())->postJson('/api/v1/krs', [
+            'nim' => '102022400045',
+            'kode_mata_kuliah' => 'IAE401',
+            'nama_mata_kuliah' => 'Integrasi Aplikasi Enterprise',
+            'sks' => 3,
+            'tahun_ajaran' => '2025/2026',
+            'semester' => 'ganjil',
+            'catatan' => 'Demo pencatatan KRS',
+        ]);
+
+        $response->assertUnprocessable()
+            ->assertJsonPath('status', 'error')
+            ->assertJsonPath('message', 'KRS untuk mata kuliah ini sudah tercatat pada semester tersebut.');
     }
 }

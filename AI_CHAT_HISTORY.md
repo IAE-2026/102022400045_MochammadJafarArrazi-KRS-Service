@@ -13,8 +13,8 @@
 
 ### Prompt
 
-> Saya memiliki assignment Integrated Application Enterprise (IAE) tentang service-based architecture.
-> Tolong bantu analisis requirement berikut:
+> Saya dapet assignment IAE tentang service-based architecture.
+Requirementnya:
 >
 > * Setiap mahasiswa membuat service sendiri
 > * Service harus berjalan mandiri dengan Docker
@@ -36,11 +36,10 @@
 
 ### Prompt
 
-> Domain project adalah Education System.
-> Proses bisnis: dosen melakukan persetujuan KRS semester baru.
-> Service saya bertanggung jawab untuk pencatatan KRS mahasiswa.
-> Tolong bantu desain business flow dan integrasi antarservice.
-
+Domain project saya Education System.
+Flow bisnisnya dosen melakukan persetujuan KRS semester baru.
+Service yang saya pegang bagian pencatatan KRS mahasiswa.
+Tolong bantu buat alur bisnis dan integrasi antarservice.
 ### Hasil
 
 Dirancang alur:
@@ -57,7 +56,7 @@ Dirancang alur:
 
 ### Prompt
 
-> Buatkan rancangan service Laravel untuk KRS-Service dengan struktur endpoint REST, GraphQL, Docker, Swagger, dan database migration.
+> Tolong bantu buat rancangan KRS-Service Laravel lengkap dengan endpoint REST, GraphQL, Docker, dan migration database.
 
 ### Hasil
 
@@ -82,7 +81,7 @@ Endpoint utama:
 
 ### Prompt
 
-> Buatkan format Standard Integration Contract untuk response API Laravel menggunakan JSON.
+> Bantu buat format response API Laravel yang standar buat assignment ini.
 
 ### Hasil
 
@@ -118,7 +117,7 @@ Error response:
 
 ### Prompt
 
-> Bagaimana implementasi komunikasi antarservice di Laravel menggunakan HTTP Client untuk validasi mahasiswa, nilai IPS, dan mata kuliah?
+>Gimana cara implementasi komunikasi antarservice di Laravel pakai HTTP Client buat validasi mahasiswa, IPS, dan mata kuliah?
 
 ### Hasil
 
@@ -142,7 +141,7 @@ $response = Http::withHeaders([
 
 ### Prompt
 
-> Buatkan konfigurasi Dockerfile dan docker-compose untuk Laravel service dengan MySQL dan network bersama.
+> Tolong buatkan Dockerfile dan docker-compose untuk Laravel + MySQL.
 
 ### Hasil
 
@@ -159,7 +158,7 @@ Dibuat:
 
 ### Prompt
 
-> Buatkan dokumentasi Swagger/OpenAPI sederhana untuk endpoint KRS Laravel.
+> Bantu buat dokumentasi Swagger/OpenAPI sederhana untuk endpoint KRS.
 
 ### Hasil
 
@@ -176,7 +175,7 @@ Diputuskan:
 
 ### Prompt
 
-> Buatkan implementasi GraphQL sederhana untuk query daftar KRS.
+> Bantu buat GraphQL sederhana untuk query daftar KRS.
 
 ### Hasil
 
@@ -205,7 +204,7 @@ query {
 
 ### Prompt
 
-> Buatkan README project service-based Laravel untuk assignment IAE lengkap dengan cara install, docker, endpoint, dan fitur.
+> Tolong bantu buat README project Laravel service-based lengkap buat assignment IAE.
 
 ### Hasil
 

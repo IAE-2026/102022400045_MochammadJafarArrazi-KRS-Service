@@ -20,7 +20,7 @@ return [
 
     'sso' => [
         'url' => rtrim(env('SSO_URL', 'https://iae-sso.virtualfri.id'), '/'),
-        'team_id' => env('IAE_TEAM_ID', 'TEAM-06'),
+        'team_id' => env('IAE_TEAM_ID', 'TEAM-09'),
         'integration_enabled' => filter_var(env('SSO_INTEGRATION_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
     ],
 ];

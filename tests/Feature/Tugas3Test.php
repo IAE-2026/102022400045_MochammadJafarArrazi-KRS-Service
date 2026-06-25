@@ -27,6 +27,7 @@ class Tugas3Test extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        \Illuminate\Support\Facades\Cache::forget('iae_jwks');
 
         // Locate openssl.cnf on Windows if necessary
         $options = [];

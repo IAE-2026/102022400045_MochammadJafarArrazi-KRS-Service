@@ -23,7 +23,30 @@ class KrsController extends Controller
         );
     }
 
-    public function bySemester(string $tahunAjaran, string $semester): JsonResponse
+    public function bySemester(string $tahunAjaranSemester): JsonResponse
+    {
+        $lastHyphenPos = strrpos($tahunAjaranSemester, '-');
+
+        if ($lastHyphenPos === false) {
+            return ApiResponse::error('Format semester tidak valid. Gunakan format tahun-ajaran-semester, contoh: 2025-2026-ganjil.', null, 400);
+        }
+
+        $tahunAjaranRaw = substr($tahunAjaranSemester, 0, $lastHyphenPos);
+        $semesterRaw = substr($tahunAjaranSemester, $lastHyphenPos + 1);
+
+        $tahunAjaran = str_replace('-', '/', $tahunAjaranRaw);
+        $semester = strtolower($semesterRaw);
+
+        $data = Krs::query()
+            ->where('tahun_ajaran', $tahunAjaran)
+            ->where('semester', $semester)
+            ->latest()
+            ->get();
+
+        return ApiResponse::success($data, 'Data KRS semester berhasil diambil.');
+    }
+
+    public function bySemesterOld(string $tahunAjaran, string $semester): JsonResponse
     {
         $tahunAjaran = str_replace('-', '/', $tahunAjaran);
         $semester = strtolower($semester);
@@ -217,5 +240,73 @@ class KrsController extends Controller
         }
 
         return ApiResponse::success($krs, 'KRS berhasil disetujui.');
+    }
+
+    public function updateStatus(
+        Request $request,
+        string $id,
+        CentralSsoClient $ssoClient
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'status' => ['required', 'in:approved,rejected'],
+            'catatan' => ['nullable', 'string', 'max:500'],
+        ], [
+            'required' => ':attribute wajib diisi.',
+            'in' => ':attribute tidak valid.',
+        ]);
+
+        if ($validator->fails()) {
+            return ApiResponse::error('Validasi gagal.', $validator->errors(), 422);
+        }
+
+        $krs = Krs::query()->find($id);
+        if (! $krs) {
+            return ApiResponse::error('Data KRS tidak ditemukan.', null, 404);
+        }
+
+        $validated = $validator->validated();
+        $krs->status_persetujuan = $validated['status'];
+        $krs->catatan = $validated['catatan'] ?? null;
+        $krs->save();
+
+        if (config('iae.sso.integration_enabled', true)) {
+            $activityName = $krs->status_persetujuan === 'approved' ? 'KrsApproved' : 'KrsRejected';
+            $routingKey = $krs->status_persetujuan === 'approved' ? 'krs.approved' : 'krs.rejected';
+
+            // Send SOAP Audit Log
+            $receiptNumber = $ssoClient->sendAuditLog($activityName, [
+                'krs_id' => $krs->id,
+                'nim' => $krs->nim,
+                'kode_mata_kuliah' => $krs->kode_mata_kuliah,
+                'nama_mata_kuliah' => $krs->nama_mata_kuliah,
+                'sks' => $krs->sks,
+                'tahun_ajaran' => $krs->tahun_ajaran,
+                'semester' => $krs->semester,
+                'status_persetujuan' => $krs->status_persetujuan,
+                'processed_by' => Auth::user() ? Auth::user()->email : 'System',
+            ]);
+
+            if ($receiptNumber) {
+                $krs->update([
+                    'receipt_number' => $receiptNumber,
+                ]);
+            }
+
+            // Publish message to RabbitMQ
+            $ssoClient->publishMessage($routingKey, [
+                'krs_id' => $krs->id,
+                'nim' => $krs->nim,
+                'kode_mata_kuliah' => $krs->kode_mata_kuliah,
+                'nama_mata_kuliah' => $krs->nama_mata_kuliah,
+                'sks' => $krs->sks,
+                'tahun_ajaran' => $krs->tahun_ajaran,
+                'semester' => $krs->semester,
+                'status_persetujuan' => $krs->status_persetujuan,
+                'receipt_number' => $receiptNumber,
+                'timestamp' => now()->toIso8601String(),
+            ]);
+        }
+
+        return ApiResponse::success($krs, 'Status KRS berhasil diperbarui.');
     }
 }

@@ -11,7 +11,7 @@ Service Pencatatan KRS Mahasiswa untuk IAE Tugas 2.
 - Proses bisnis: Dosen melakukan persetujuan KRS semester baru
 - Framework: Laravel 12
 - Database: MySQL
-- Docker host port: `8002`
+- Docker host port: `8000`
 
 ## Arsitektur Singkat
 
@@ -40,7 +40,7 @@ docker compose up --build
 URL lokal:
 
 ```text
-http://localhost:8002
+http://localhost:8000
 ```
 
 ## Environment Penting
@@ -81,14 +81,14 @@ Endpoint:
 ```http
 GET  /api/v1/krs
 GET  /api/v1/krs/{id}
-GET  /api/v1/krs/semester/{tahunAjaran}/{semester}
+GET  /api/v1/krs/{tahun-ajaran-semester}
 POST /api/v1/krs
 ```
 
 Contoh request:
 
 ```bash
-curl -X POST http://localhost:8002/api/v1/krs \
+curl -X POST http://localhost:8000/api/v1/krs \
   -H "Content-Type: application/json" \
   -H "X-IAE-KEY: 102022400045" \
   -d "{\"nim\":\"102022400045\",\"kode_mata_kuliah\":\"IAE401\",\"tahun_ajaran\":\"2025/2026\",\"semester\":\"ganjil\"}"
@@ -125,13 +125,13 @@ Error:
 Swagger UI:
 
 ```text
-http://localhost:8002/api/documentation
+http://localhost:8000/api/documentation
 ```
 
 OpenAPI JSON:
 
 ```text
-http://localhost:8002/docs/openapi.json
+http://localhost:8000/docs/openapi.json
 ```
 
 ## GraphQL
@@ -139,13 +139,13 @@ http://localhost:8002/docs/openapi.json
 Endpoint:
 
 ```text
-POST http://localhost:8002/graphql
+POST http://localhost:8000/graphql
 ```
 
 GraphiQL:
 
 ```text
-http://localhost:8002/graphiql
+http://localhost:8000/graphiql
 ```
 
 Contoh query:

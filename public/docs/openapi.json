@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8002",
+      "url": "http://localhost:8000",
       "description": "Local Docker"
     }
   ],
@@ -117,29 +117,83 @@
         }
       }
     },
-    "/api/v1/krs/semester/{tahunAjaran}/{semester}": {
-      "get": {
-        "summary": "Mengambil data KRS berdasarkan tahun ajaran dan semester",
-        "description": "Gunakan format tahun ajaran dengan tanda minus pada path, contoh 2025-2026, karena slash dipakai sebagai pemisah URL.",
+    "/api/v1/krs/{id}/status": {
+      "patch": {
+        "summary": "Menyetujui atau menolak KRS (Khusus Dosen)",
         "tags": ["KRS"],
         "parameters": [
           {
-            "name": "tahunAjaran",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "2025-2026"
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["approved", "rejected"],
+                    "example": "approved"
+                  },
+                  "catatan": {
+                    "type": "string",
+                    "example": "KRS disetujui"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status KRS berhasil diperbarui",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessKrsResponse"
+                }
+              }
             }
           },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Hanya Dosen yang diperbolehkan"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationError"
+          }
+        }
+      }
+    },
+    "/api/v1/krs/{tahunAjaranSemester}": {
+      "get": {
+        "summary": "Mengambil data KRS berdasarkan tahun ajaran dan semester",
+        "description": "Gunakan format tahun-ajaran-semester, contoh: 2025-2026-ganjil.",
+        "tags": ["KRS"],
+        "parameters": [
           {
-            "name": "semester",
+            "name": "tahunAjaranSemester",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["ganjil", "genap", "pendek"]
-            }
+              "example": "2025-2026-ganjil"
+            },
+            "description": "Format: tahun-ajaran-semester, contoh: 2025-2026-ganjil"
           }
         ],
         "responses": {
@@ -244,6 +298,11 @@
           "catatan": {
             "type": "string",
             "nullable": true
+          },
+          "receipt_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "IAE-LOG-2026-2BFA5A84"
           },
           "created_at": {
             "type": "string",

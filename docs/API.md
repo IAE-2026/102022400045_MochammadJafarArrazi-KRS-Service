@@ -15,7 +15,7 @@ X-IAE-KEY: 102022400045
 Base URL lokal:
 
 ```text
-http://localhost:8002
+http://localhost:8000
 ```
 
 Endpoint:
@@ -23,11 +23,11 @@ Endpoint:
 ```http
 GET  /api/v1/krs
 GET  /api/v1/krs/{id}
-GET  /api/v1/krs/semester/{tahunAjaran}/{semester}
+GET  /api/v1/krs/{tahun-ajaran-semester}
 POST /api/v1/krs
 ```
 
-Catatan endpoint semester: gunakan `2025-2026` pada path. Service akan mengubahnya menjadi `2025/2026` untuk query database.
+Catatan endpoint semester: gunakan format tahun-ajaran-semester pada path, contoh: `2025-2026-ganjil`. Service akan memprosesnya untuk mencari data di database.
 
 ## GraphQL
 
@@ -57,13 +57,13 @@ query {
 Swagger UI:
 
 ```text
-http://localhost:8002/api/documentation
+http://localhost:8000/api/documentation
 ```
 
 OpenAPI JSON:
 
 ```text
-http://localhost:8002/docs/openapi.json
+http://localhost:8000/docs/openapi.json
 ```
 
 ## Inter-Service Communication

@@ -159,4 +159,35 @@ class KrsApiTest extends TestCase
             ->assertJsonPath('status', 'error')
             ->assertJsonPath('message', 'KRS untuk mata kuliah ini sudah tercatat pada semester tersebut.');
     }
+
+    public function test_get_krs_by_semester_new_format_returns_filtered_data(): void
+    {
+        Krs::query()->create([
+            'nim' => '102022400045',
+            'kode_mata_kuliah' => 'IAE401',
+            'nama_mata_kuliah' => 'Integrasi Aplikasi Enterprise',
+            'sks' => 3,
+            'tahun_ajaran' => '2025/2026',
+            'semester' => 'ganjil',
+            'status_persetujuan' => 'pending',
+        ]);
+
+        Krs::query()->create([
+            'nim' => '102022400045',
+            'kode_mata_kuliah' => 'BD201',
+            'nama_mata_kuliah' => 'Basis Data',
+            'sks' => 3,
+            'tahun_ajaran' => '2025/2026',
+            'semester' => 'genap',
+            'status_persetujuan' => 'pending',
+        ]);
+
+        $response = $this->withHeaders($this->headers())
+            ->getJson('/api/v1/krs/2025-2026-ganjil');
+
+        $response->assertOk()
+            ->assertJsonPath('status', 'success')
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.kode_mata_kuliah', 'IAE401');
+    }
 }

@@ -84,8 +84,6 @@ GET  /api/v1/krs/{id}
 GET  /api/v1/krs/{tahun-ajaran-semester}
 GET  /api/v1/krs/semester/{tahunAjaran}/{semester}
 POST /api/v1/krs
-PATCH /api/v1/krs/{id}/status
-PUT  /api/v1/krs/{id}/approve
 ```
 
 Contoh request:

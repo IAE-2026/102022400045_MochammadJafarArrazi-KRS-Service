@@ -26,8 +26,6 @@ GET  /api/v1/krs/{id}
 GET  /api/v1/krs/{tahun-ajaran-semester}
 GET  /api/v1/krs/semester/{tahunAjaran}/{semester}
 POST /api/v1/krs
-PATCH /api/v1/krs/{id}/status
-PUT  /api/v1/krs/{id}/approve
 ```
 
 Catatan endpoint semester: gunakan `2025-2026` pada path. Service akan mengubahnya menjadi `2025/2026` untuk query database.
